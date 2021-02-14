@@ -1,21 +1,11 @@
 import mysql from 'mysql2/promise';
 
-const pool = mysql.createPool({
-  host: 'localhost',
+export const pool = mysql.createPool({
+  host: process.env.DB_HOST,
   port: 3306,
-  user: 'root',
-  password: '5872',
-  database: 'studev',
+  user: process.env.DB_USER,
+  password: process.env.DB_PW,
+  database: process.env.DB_NAME,
   connectionLimit: 50000,
   waitForConnections: false,
 });
-
-const get = async () => {
-  const connection = await pool.getConnection();
-  const query =
-    "insert into user(id, user_id, password, nickname) values(1, 'dd', '123', 'dd')";
-
-  connection.query(query);
-};
-
-get();
