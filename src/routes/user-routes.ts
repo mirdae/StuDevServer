@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { signUp, signIn } from '../service/user-service';
 
 const router = Router();
 
@@ -9,6 +10,7 @@ type SignUpUserBody = {
   email: string;
 };
 
-router.post('/', (req, res) => console.log(req));
+router.post('/signin', signIn);
+router.post('/', signUp);
 
 export default router;
