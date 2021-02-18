@@ -16,7 +16,6 @@ export const selectQueryExecuter = async <T>(query: string): Promise<T[]> => {
   const conn = await pool.getConnection();
   const [queryResult, error] = await promiseHandler(conn.query(query));
   const [result, _] = queryResult;
-  console.log(result);
   conn.release();
   return result as T[];
 };
@@ -24,6 +23,7 @@ export const selectQueryExecuter = async <T>(query: string): Promise<T[]> => {
 export const insertQueryExecuter = async (query: string): Promise<number> => {
   const conn = await pool.getConnection();
   const [queryResult, error] = await promiseHandler(conn.query(query));
+  console.log(error);
   const [{ insertId }, _] = queryResult;
   conn.release();
   return insertId;

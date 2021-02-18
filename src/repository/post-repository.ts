@@ -2,7 +2,6 @@ import {
   insertQueryExecuter,
   selectQueryExecuter,
 } from '../utils/query-executor';
-import { getFormatDate } from '../utils/get-data';
 
 export type Post = {
   title: string;
