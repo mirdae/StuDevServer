@@ -19,27 +19,26 @@ export const signUp = async (req: Request, res: Response) => {
 export const signIn = async (req: Request, res: Response) => {
   const { socialId, password } = req.body;
   try {
-    const result = await UserRepo.checkValidUser(socialId);
-    if (!result[0]) {
+    const result = await UserRepo.findBySocialId(socialId);
+    if (!result) {
       return res.status(200).json({ message: '없는 사용자 입니다.' });
     }
-
     // 비밀번호 확인
     const comparePW = await bcrypt
-      .compare(password, result[0].hash)
-      .then((res) => res);
+      .compare(password, result.hash)
+      .then((res: any) => res);
 
     if (!comparePW) {
       return res.status(200).json({ message: '비밀번호가 틀렸습니다.' });
     }
 
-    delete result[0].hash;
+    delete result.hash;
     // token만들어서 브라우저에 넘기기
-    const token = createJWT(result[0].id);
+    const token = createJWT(result.id);
     return res
-      .cookie('x_auth', token)
+      .cookie('auth', token)
       .status(200)
-      .json({ message: 'success', user: result[0] });
+      .json({ message: 'success', user: result });
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: 'fail', error });
