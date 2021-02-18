@@ -22,8 +22,15 @@ export class UserRepo {
     return await insertQueryExecuter(createUserQuery);
   }
 
-  static async checkValidUser(socialId: string) {
-    const checkValidUserQuery = `SELECT * FROM user WHERE social_id = '${socialId}'`;
-    return await selectQueryExecuter<User>(checkValidUserQuery);
+  static async findBySocialId(socialId: string) {
+    const findUserBySocialIdQuery = `SELECT * FROM user WHERE social_id = '${socialId}'`;
+    const [user, _] = await selectQueryExecuter<User>(findUserBySocialIdQuery);
+    return user;
+  }
+
+  static async findById(userId: number) {
+    const findUserByIdQuery = `SELECT * FROM user WHERE id='${userId}'`;
+    const [user, _] = await selectQueryExecuter<User>(findUserByIdQuery);
+    return user;
   }
 }
