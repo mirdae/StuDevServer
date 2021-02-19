@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { signUp, signIn } from '../service/user-service';
+import { signUp, signIn, duplicateIdCheck } from '../service/user-service';
 
 const router = Router();
 
@@ -11,6 +11,7 @@ type SignUpUserBody = {
 };
 
 router.post('/signin', signIn);
+router.post('/check/id', duplicateIdCheck);
 router.post('/', signUp);
 
 export default router;

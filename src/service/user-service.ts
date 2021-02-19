@@ -44,3 +44,25 @@ export const signIn = async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'fail', error });
   }
 };
+
+export const duplicateIdCheck = async (req: Request, res: Response) => {
+  const {
+    body: { id },
+  } = req;
+  try {
+    const user = await UserRepo.findBySocialId(id);
+    if (!user) {
+      return res
+        .status(200)
+        .json({ message: '사용가능한 아이디', duplicate: false });
+    }
+    return res
+      .status(200)
+      .json({ message: '사용불가능한 아이디', duplicate: true });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: 'fail', error });
+  }
+};
+
+//.header({ location: 'http://localhost:3000/' })
