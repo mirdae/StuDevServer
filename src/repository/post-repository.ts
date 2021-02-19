@@ -23,4 +23,14 @@ export class PostRepo {
     const createPostQuery = `INSERT INTO post(user_id, title, content, topic_category, on_off_category, participant_count_limit) VALUES ('${id}', '${title}', '${content}', '${topic_category}', '${on_off_category}', '${participant_count_limit}')`;
     return await insertQueryExecuter(createPostQuery);
   }
+
+  static async getAllPosts() {
+    const getAllPostsQuery = `SELECT * FROM post`;
+    return await selectQueryExecuter(getAllPostsQuery);
+  }
+
+  static async getPostDetail(id: number) {
+    const getPostDetailQuery = `SELECT * FROM post WHERE id=${id}`;
+    return await selectQueryExecuter(getPostDetailQuery);
+  }
 }

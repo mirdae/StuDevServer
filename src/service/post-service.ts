@@ -30,6 +30,28 @@ export const createPost = async (
     return res.status(201).json({ message: 'success' });
   } catch (error) {
     console.log(error);
-    //return res.status(400).json({ message: 'fail', error });
+    return res.status(400).json({ message: 'fail', error });
+  }
+};
+
+export const getAllPosts = async (req: Request, res: Response) => {
+  try {
+    const posts = await PostRepo.getAllPosts();
+    return res.status(200).json({ message: 'success', posts });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: 'fail', error });
+  }
+};
+
+export const getPostDetail = async (req: Request, res: Response) => {
+  const {
+    params: { id },
+  } = req;
+  try {
+    const post = await PostRepo.getPostDetail(parseInt(id));
+    return res.status(200).json({ message: 'success', post: post[0] });
+  } catch (error) {
+    console.log(error);
   }
 };
