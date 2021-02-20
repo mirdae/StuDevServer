@@ -28,6 +28,12 @@ export class UserRepo {
     return user;
   }
 
+  static async findByNickname(nickname: string) {
+    const findUserByNicknameQuery = `SELECT * FROM user WHERE nickname = '${nickname}'`;
+    const [user, _] = await selectQueryExecuter<User>(findUserByNicknameQuery);
+    return user;
+  }
+
   static async findById(userId: number) {
     const findUserByIdQuery = `SELECT * FROM user WHERE id='${userId}'`;
     const [user, _] = await selectQueryExecuter<User>(findUserByIdQuery);
