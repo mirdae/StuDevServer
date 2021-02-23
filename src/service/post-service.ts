@@ -36,7 +36,12 @@ export const createPost = async (
 
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await PostRepo.getAllPosts();
+    let posts = await PostRepo.getAllPosts();
+    posts = posts.map((post: any) => {
+      post['participant_count'] =
+        post.participant === '' ? 0 : post.participant.split(',').length;
+      return post;
+    });
     return res.status(200).json({ message: 'success', posts });
   } catch (error) {
     console.log(error);
@@ -49,8 +54,48 @@ export const getPostDetail = async (req: Request, res: Response) => {
     params: { id },
   } = req;
   try {
-    const post = await PostRepo.getPostDetail(parseInt(id));
-    return res.status(200).json({ message: 'success', post: post[0] });
+    const post: any = await PostRepo.getPostDetail(parseInt(id));
+    const comments = post.map((each: any) => {
+      return {
+        id: each.comment_id,
+        comment: each.comment_text,
+        user_id: each.comment_user_id,
+        create_at: each.comment_created_at,
+        updated_at: each.comment_updated_at,
+      };
+    });
+    const postData = post[0];
+    delete postData.comment_text;
+    delete postData.comment_id;
+    delete postData.comment_text;
+    delete postData.comment_post_id;
+    delete postData.comment_user_id;
+    delete postData.comment_created_at;
+    delete postData.comment_updated_at;
+
+    postData.comments = comments;
+    postData['participant_count'] =
+      postData.participant === '' ? 0 : postData.participant.split(',').length;
+
+    return res.status(200).json({ message: 'success', post: postData });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const participateApply = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response,
+) => {
+  const {
+    params: { id: post_id },
+    user: { id: user_id, nickname },
+  } = req;
+  try {
+    const insertId = await PostRepo.participateApply(
+      parseInt(post_id),
+      user_id,
+    );
   } catch (error) {
     console.log(error);
   }
