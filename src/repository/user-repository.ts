@@ -18,7 +18,7 @@ export class UserRepo {
     email: string,
     nickname: string,
   ) {
-    const createUserQuery = `INSERT INTO user(social_id, hash, nickname, email) VALUES ('${socialId}', '${hash}', '${nickname}', '${email}')`;
+    const createUserQuery = `INSERT INTO user(social_id, hash, nickname, email) VALUES ('${socialId}', '${hash}', '${email}', '${nickname}')`;
     return await insertQueryExecuter(createUserQuery);
   }
 
