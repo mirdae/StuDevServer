@@ -2,6 +2,17 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import { UserRepo } from '../repository/user-repository';
 import { createJWT } from '../utils/jwt';
+import { IGetUserAuthInfoRequest } from '../middleware/decode-jwt';
+
+export const authByToken = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response,
+) => {
+  const { id, social_id, nickname } = req.user;
+  return res
+    .status(200)
+    .json({ message: 'success', user: { id, social_id, nickname } });
+};
 
 export const signUp = async (req: Request, res: Response) => {
   const { socialId, password, nickname, email } = req.body;

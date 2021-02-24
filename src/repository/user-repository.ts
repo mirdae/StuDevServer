@@ -5,7 +5,7 @@ import {
 
 export type User = {
   id: number;
-  socialId: string;
+  social_id: string;
   nickname?: string;
   email: string;
   hash?: string;
@@ -13,17 +13,17 @@ export type User = {
 
 export class UserRepo {
   static async createUser(
-    socialId: string,
+    social_id: string,
     hash: string,
     email: string,
     nickname: string,
   ) {
-    const createUserQuery = `INSERT INTO user(social_id, hash, nickname, email) VALUES ('${socialId}', '${hash}', '${email}', '${nickname}')`;
+    const createUserQuery = `INSERT INTO user(social_id, hash, nickname, email) VALUES ('${social_id}', '${hash}', '${email}', '${nickname}')`;
     return await insertQueryExecuter(createUserQuery);
   }
 
-  static async findBySocialId(socialId: string) {
-    const findUserBySocialIdQuery = `SELECT * FROM user WHERE social_id = '${socialId}'`;
+  static async findBySocialId(social_id: string) {
+    const findUserBySocialIdQuery = `SELECT * FROM user WHERE social_id = '${social_id}'`;
     const [user, _] = await selectQueryExecuter<User>(findUserBySocialIdQuery);
     return user;
   }
