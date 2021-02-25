@@ -89,6 +89,7 @@ export const getPostDetail = async (req: Request, res: Response) => {
     return res.status(200).json({ message: 'success', post: postData });
   } catch (error) {
     console.log(error);
+    return res.status(400).json({ message: 'fail', error });
   }
 };
 
@@ -105,6 +106,7 @@ export const participateApply = async (
     return res.status(200).json({ message: 'success', user_id });
   } catch (error) {
     console.log(error);
+    return res.status(400).json({ message: 'fail', error });
   }
 };
 
@@ -121,5 +123,40 @@ export const participateCancel = async (
     return res.status(200).json({ message: 'success', user_id });
   } catch (error) {
     console.log(error);
+    return res.status(400).json({ message: 'fail', error });
+  }
+};
+
+export const createComment = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response,
+) => {
+  const {
+    params: { id: post_id },
+    user: { id: user_id, nickname },
+    body: { comment },
+  } = req;
+  try {
+    const dateArr = new Date().toString().split(' ');
+    const month =
+      new Date().getMonth() > 10
+        ? new Date().getMonth()
+        : `0${new Date().getMonth()}`;
+    const created_at = `${dateArr[3]}-${month}-${dateArr[2]} ${dateArr[4]}`;
+    await PostRepo.createComment(
+      parseInt(post_id),
+      user_id,
+      comment,
+      created_at,
+    );
+    return res
+      .status(200)
+      .json({
+        message: 'success',
+        commentInfo: { user_id, post_id, comment, created_at },
+      });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: 'fail', error });
   }
 };

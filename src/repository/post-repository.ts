@@ -45,4 +45,14 @@ export class PostRepo {
     const participateCancelQuery = `UPDATE post set participant=REPLACE(participant, "${user_id},", "") where id=${post_id}`;
     return await updateOrDeleteQueryExecuter(participateCancelQuery);
   }
+
+  static async createComment(
+    post_id: number,
+    user_id: number,
+    comment: string,
+    created_at: string,
+  ) {
+    const createCommentQuery = `INSERT INTO comment(comment_user_id, comment_post_id, comment_text, comment_created_at) VALUES ("${user_id}", "${post_id}", "${comment}", "${created_at}")`;
+    return await insertQueryExecuter(createCommentQuery);
+  }
 }
