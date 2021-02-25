@@ -1,6 +1,7 @@
 import {
   insertQueryExecuter,
   selectQueryExecuter,
+  updateOrDeleteQueryExecuter,
 } from '../utils/query-executor';
 
 export type Post = {
@@ -30,12 +31,18 @@ export class PostRepo {
   }
 
   static async getPostDetail(id: number) {
-    const getPostDetailQuery = `SELECT * FROM post left JOIN comment ON comment.comment_post_id=post.id WHERE post.id=${id}`;
+    const getPostDetailQuery = `SELECT * FROM post left JOIN (SELECT comment.*, user.nickname FROM comment LEFT JOIN user ON comment.comment_user_id=user.id) comments oN comments.comment_post_id=post.id WHERE post.id=${id}
+`;
     return await selectQueryExecuter(getPostDetailQuery);
   }
 
   static async participateApply(post_id: number, user_id: number) {
-    const participateApplyQuery = `INSERT INTO participant(post_id, user_id) values (${post_id}, ${user_id})`;
-    return await insertQueryExecuter(participateApplyQuery);
+    const participateApplyQuery = `UPDATE post set participant=concat(participant,"${user_id},") where id=${post_id}`;
+    return await updateOrDeleteQueryExecuter(participateApplyQuery);
+  }
+
+  static async participateCancel(post_id: number, user_id: number) {
+    const participateCancelQuery = `UPDATE post set participant=REPLACE(participant, "${user_id},", "") where id=${post_id}`;
+    return await updateOrDeleteQueryExecuter(participateCancelQuery);
   }
 }

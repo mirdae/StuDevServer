@@ -39,7 +39,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
     let posts = await PostRepo.getAllPosts();
     posts = posts.map((post: any) => {
       post['participant_count'] =
-        post.participant === '' ? 0 : post.participant.split(',').length;
+        post.participant === '' ? 0 : post.participant.split(',').length - 1;
       return post;
     });
     return res.status(200).json({ message: 'success', posts });
@@ -62,10 +62,17 @@ export const getPostDetail = async (req: Request, res: Response) => {
         user_id: each.comment_user_id,
         create_at: each.comment_created_at,
         updated_at: each.comment_updated_at,
+        nickname: each.nickname,
       };
     });
+
+    // 댓글이 하나도 작성되지 않은 게시글의 comments에도 null값으로 채워진 데이터가 들어가기떄문에
+    // null값으로 채워진 댓글 데이터를 제거해줘야됨
+    if (comments[0].id === null) {
+      comments.shift();
+    }
+
     const postData = post[0];
-    delete postData.comment_text;
     delete postData.comment_id;
     delete postData.comment_text;
     delete postData.comment_post_id;
@@ -74,9 +81,11 @@ export const getPostDetail = async (req: Request, res: Response) => {
     delete postData.comment_updated_at;
 
     postData.comments = comments;
+    postData.participant = postData.participant.split(',');
+    postData.participant.pop();
     postData['participant_count'] =
-      postData.participant === '' ? 0 : postData.participant.split(',').length;
-
+      postData.participant === '' ? 0 : postData.participant.length;
+    console.log(postData.participant);
     return res.status(200).json({ message: 'success', post: postData });
   } catch (error) {
     console.log(error);
@@ -92,10 +101,24 @@ export const participateApply = async (
     user: { id: user_id, nickname },
   } = req;
   try {
-    const insertId = await PostRepo.participateApply(
-      parseInt(post_id),
-      user_id,
-    );
+    await PostRepo.participateApply(parseInt(post_id), user_id);
+    return res.status(200).json({ message: 'success', user_id });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const participateCancel = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response,
+) => {
+  const {
+    params: { id: post_id },
+    user: { id: user_id, nickname },
+  } = req;
+  try {
+    await PostRepo.participateCancel(parseInt(post_id), user_id);
+    return res.status(200).json({ message: 'success', user_id });
   } catch (error) {
     console.log(error);
   }
