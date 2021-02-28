@@ -149,12 +149,10 @@ export const createComment = async (
       comment,
       created_at,
     );
-    return res
-      .status(200)
-      .json({
-        message: 'success',
-        commentInfo: { user_id, post_id, comment, created_at },
-      });
+    return res.status(200).json({
+      message: 'success',
+      commentInfo: { user_id, post_id, comment, created_at, nickname },
+    });
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: 'fail', error });
