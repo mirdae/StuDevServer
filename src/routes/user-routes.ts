@@ -5,6 +5,7 @@ import {
   duplicateIdCheck,
   duplicateNicknameCheck,
   authByToken,
+  logout,
 } from '../service/user-service';
 import { decodeJWT } from '../middleware/decode-jwt';
 
@@ -17,6 +18,7 @@ type SignUpUserBody = {
   email: string;
 };
 
+router.delete('/', logout);
 router.get('/auth', decodeJWT, authByToken);
 router.post('/signin', signIn);
 router.post('/check/id', duplicateIdCheck);
