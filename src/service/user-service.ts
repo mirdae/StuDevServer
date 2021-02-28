@@ -9,6 +9,7 @@ export const authByToken = async (
   res: Response,
 ) => {
   const { id, social_id, nickname } = req.user;
+
   return res
     .status(200)
     .json({ message: 'success', user: { id, social_id, nickname } });
@@ -46,6 +47,7 @@ export const signIn = async (req: Request, res: Response) => {
     delete result.hash;
     // token만들어서 브라우저에 넘기기
     const token = createJWT(result.id);
+    const EXPIRE_TIME = 24 * 60 * 60 * 1000; // 하루 24시간
     return res
       .cookie('auth', token)
       .status(200)
@@ -54,6 +56,10 @@ export const signIn = async (req: Request, res: Response) => {
     console.log(error);
     return res.status(400).json({ message: 'fail', error });
   }
+};
+
+export const logout = async (req: Request, res: Response) => {
+  return res.clearCookie('auth').status(200).json({ message: 'success' });
 };
 
 export const duplicateIdCheck = async (req: Request, res: Response) => {
