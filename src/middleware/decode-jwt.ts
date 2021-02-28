@@ -11,12 +11,14 @@ export const decodeJWT = async (
   res: Response,
   next: NextFunction,
 ) => {
-  // 쿠키로받는거 변경하기...! 쿠키에 다른값들도 있으면 에러발생함
-  const token = req.headers.cookie.split('=')[1];
-  if (token) {
-    const user = await verifyJWT(token);
-    req.user = user;
-    next();
+  try {
+    const token = req.headers.cookie.split('=')[1];
+    if (token) {
+      const user = await verifyJWT(token);
+      req.user = user;
+      next();
+    }
+  } catch (error) {
+    return res.status(200).json({ message: 'fail', error });
   }
-  return;
 };
