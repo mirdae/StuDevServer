@@ -34,9 +34,12 @@ export const createPost = async (
   }
 };
 
-export const getAllPosts = async (req: Request, res: Response) => {
+export const getPosts = async (req: Request, res: Response) => {
+  const {
+    query: { search },
+  } = req;
   try {
-    let posts = await PostRepo.getAllPosts();
+    let posts = await PostRepo.getPosts(search);
     posts = posts.map((post: any) => {
       post['participant_count'] =
         post.participant === '' ? 0 : post.participant.split(',').length - 1;
@@ -60,7 +63,7 @@ export const getPostDetail = async (req: Request, res: Response) => {
         id: each.comment_id,
         comment: each.comment_text,
         user_id: each.comment_user_id,
-        create_at: each.comment_created_at,
+        created_at: each.comment_created_at,
         updated_at: each.comment_updated_at,
         nickname: each.nickname,
       };
@@ -143,7 +146,7 @@ export const createComment = async (
         ? new Date().getMonth()
         : `0${new Date().getMonth()}`;
     const created_at = `${dateArr[3]}-${month}-${dateArr[2]} ${dateArr[4]}`;
-    await PostRepo.createComment(
+    const comment_id = await PostRepo.createComment(
       parseInt(post_id),
       user_id,
       comment,
@@ -151,7 +154,14 @@ export const createComment = async (
     );
     return res.status(200).json({
       message: 'success',
-      commentInfo: { user_id, post_id, comment, created_at, nickname },
+      commentInfo: {
+        user_id,
+        post_id,
+        comment,
+        created_at,
+        nickname,
+        id: comment_id,
+      },
     });
   } catch (error) {
     console.log(error);

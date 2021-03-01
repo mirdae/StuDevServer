@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
   createPost,
-  getAllPosts,
+  getPosts,
   getPostDetail,
   participateApply,
   participateCancel,
@@ -16,6 +16,6 @@ router.delete('/:id/participate', decodeJWT, participateCancel);
 router.post('/:id/comment', decodeJWT, createComment);
 router.get('/:id', getPostDetail);
 router.post('/', decodeJWT, createPost);
-router.get('/', getAllPosts);
+router.get('/', getPosts);
 
 export default router;

@@ -25,9 +25,12 @@ export class PostRepo {
     return await insertQueryExecuter(createPostQuery);
   }
 
-  static async getAllPosts() {
-    const getAllPostsQuery = `SELECT * FROM post`;
-    return await selectQueryExecuter(getAllPostsQuery);
+  static async getPosts(search) {
+    // 여기 쿼리문작성부터 하면됨
+    const getPostsQuery = search
+      ? `SELECT * FROM post WHERE locate('${search}', topic_category) > 0 OR title LIKE '%${search}%';`
+      : `SELECT * FROM post`;
+    return await selectQueryExecuter(getPostsQuery);
   }
 
   static async getPostDetail(id: number) {
